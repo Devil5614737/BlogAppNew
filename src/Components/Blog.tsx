@@ -12,13 +12,13 @@ interface IProps{
 export const Blog = ({blog}:IProps) => {
   const navigate=useNavigate()
   return (
-    <Card variant="outlined" id='blog'>
+    <Card   onClick={()=>navigate(`/blog/${blog.slug}`)} variant="outlined" id='blog'>
       <CardContent>
         <Typography
           variant="h5"
           component="h4"
           sx={{ fontWeight: 600, fontSize: 18 }}
-          onClick={()=>navigate(`/blog/${blog.slug}`)}
+        
         >
         {blog.title}
         </Typography>
