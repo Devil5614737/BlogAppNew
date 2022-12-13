@@ -11,16 +11,20 @@ import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
 import rehypeRaw from "rehype-raw";
 import { BlogContext } from "../context/BlogContext";
 import { IBlogContext } from "../Interfaces/IBlogContext";
+import { SkeletonComp } from "../Components/Skeleton";
 
 export default function BlogPreview() {
   const {setBlogData}=useContext<IBlogContext>(BlogContext)
   const navigate=useNavigate();
   const params = useParams();
+  const[isLoading,setIsLoading]=useState<boolean>(false);
   const { slug } = params;
   const [blog, setBlog] = useState<IBlog>();
 
   const fetchBlog = async () => {
+    setIsLoading(true)
     const { data } = await fetchBlogBySlug(slug as string);
+    data && setIsLoading(false)
     setBlog(data[0]);
   };
 
@@ -41,7 +45,8 @@ const handleRemoveBlog=async(slug:string)=>{
 
   return (
     <Container maxWidth="md" sx={{ paddingY: 2 }}>
-      <Typography
+    {isLoading?<SkeletonComp/>:<>
+    <Typography
         variant="h1"
         component="h4"
         sx={{ fontWeight: 600, fontSize: 28, marginBottom: 3 }}
@@ -67,6 +72,7 @@ const handleRemoveBlog=async(slug:string)=>{
       color='primary'
       variant="outlined">Back</Button>
       </Box>
+    </>}
     </Container>
   );
 }
