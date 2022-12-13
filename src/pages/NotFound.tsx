@@ -11,7 +11,7 @@ export default function NotFound() {
  </Typography>
  <Typography
  onClick={()=>navigate('/')}
- variant='p' sx={{textAlign:'center',marginTop:2,fontSize:18,cursor:'pointer'}}>
+ variant='caption' sx={{textAlign:'center',marginTop:2,fontSize:18,cursor:'pointer'}}>
   go back to home
  </Typography>
   </Container>
