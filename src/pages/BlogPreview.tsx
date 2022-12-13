@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import { useParams,useNavigate } from "react-router-dom";
 import { fetchBlogBySlug, removeBlog } from "../api/request";
 import { IBlog } from "../Interfaces/IBlog";
-import { Typography, Container,Box,Button } from "@mui/material";
+import { Typography, Container,Box,Button, CircularProgress } from "@mui/material";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -18,6 +18,7 @@ export default function BlogPreview() {
   const navigate=useNavigate();
   const params = useParams();
   const[isLoading,setIsLoading]=useState<boolean>(false);
+  const[deletingCompleted,setDeletingCompleted]=useState<boolean>(false)
   const { slug } = params;
   const [blog, setBlog] = useState<IBlog>();
 
@@ -34,10 +35,15 @@ export default function BlogPreview() {
 
 
 const handleRemoveBlog=async(slug:string)=>{
+  setDeletingCompleted(true)
   try {
     const {data}=await removeBlog(slug);
-    data && navigate('/')
+    if(data)  {
+      navigate('/')
+setDeletingCompleted(false)
+    } 
   } catch (error) {
+    setDeletingCompleted(false)
     alert(error)
   }
 }
@@ -66,7 +72,9 @@ const handleRemoveBlog=async(slug:string)=>{
       <Button
       onClick={()=>handleRemoveBlog(blog?.slug as string)}
       color='error'
-      variant="outlined">Delete</Button>
+      variant="outlined">
+        {deletingCompleted?    <CircularProgress color="error" size={20} />:"DELETE"}
+      </Button>
       <Button
       onClick={()=>navigate(-1)}
       color='primary'

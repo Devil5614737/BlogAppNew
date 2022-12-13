@@ -17,7 +17,7 @@ export default function Home() {
     setIsLoading(true);
     const { data: blogs } = await fetchBlogs();
     blogs && setIsLoading(false);
-    setBlogs(blogs);
+    setBlogs(blogs.reverse());
   };
 
   useEffect(() => {

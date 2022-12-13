@@ -1,5 +1,5 @@
 import React, { FormEventHandler, useState } from "react";
-import { Container, TextField, Box, Button } from "@mui/material";
+import { Container, TextField, Box, Button, CircularProgress } from "@mui/material";
 import { Header } from "../Components/Header";
 import { useNavigate } from "react-router-dom";
 import { newBlog } from "../api/request";
@@ -10,14 +10,21 @@ export default function NewBlog() {
   const [desc, setDesc] = useState<string>("");
   const [markdown, setMarkdown] = useState<string>("");
   const navigate = useNavigate();
+  const[isLoading,setIsLoading]=useState<boolean>(false)
 
   const handleCreateArticle = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true)
     try {
       const {data}=await newBlog(title, desc, markdown);
-      data && navigate('/')
+      if(data){
+        navigate('/')
+        setIsLoading(false)
+      } 
+        
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+        setIsLoading(false)
         alert(error.response?.data);
       }
     }
@@ -28,6 +35,7 @@ export default function NewBlog() {
 
   return (
     <Container maxWidth="md">
+  
       <Header title="Write Article" />
       <main style={{ marginTop: 32 }}>
         <form onSubmit={handleCreateArticle}>
@@ -72,7 +80,7 @@ export default function NewBlog() {
               Cancel
             </Button>
             <Button disabled={!title||!desc||!markdown} onClick={handleCreateArticle} variant="outlined">
-              Save
+              {isLoading?    <CircularProgress color="primary" size={20} />:"Save"}
             </Button>
           </Box>
         </form>

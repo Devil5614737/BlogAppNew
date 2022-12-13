@@ -1,5 +1,5 @@
 import React, { FormEventHandler, useState, useContext } from "react";
-import { Container, TextField, Box, Button } from "@mui/material";
+import { Container, TextField, Box, Button, CircularProgress } from "@mui/material";
 import { Header } from "../Components/Header";
 import { useNavigate } from "react-router-dom";
 import { editBlog, newBlog } from "../api/request";
@@ -14,10 +14,12 @@ export default function EditBlog() {
   const [markdown, setMarkdown] = useState<string>(
     blogData?.markdown as string
   );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleUpdateArticle = async (e: any) => {
     e.preventDefault();
+setIsLoading(true)
     try {
       const { data } = await editBlog(
         blogData?.slug as string,
@@ -25,9 +27,13 @@ export default function EditBlog() {
         desc,
         markdown
       );
-      data && navigate(-1);
+      if(data){
+        setIsLoading(false)
+         navigate(-1);
+      }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+        setIsLoading(false)
         alert(error.response?.data);
       }
     }
@@ -86,7 +92,7 @@ export default function EditBlog() {
               onClick={handleUpdateArticle}
               variant="outlined"
             >
-              Save
+              {isLoading?    <CircularProgress color="primary" size={20} />:"Save"}
             </Button>
           </Box>
         </form>
